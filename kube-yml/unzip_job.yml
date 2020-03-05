@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: download-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: download-job
+        image: abhay3010/cse-240:base-py-packages-v3
+        imagePullPolicy: Always 
+        command:
+        - "./setup.sh"
+        resources:
+          limits:
+            memory: 48Gi
+            cpu: "6"
+          requests:
+            memory: 4Gi
+            cpu: "1"
+        volumeMounts:
+          - mountPath: /brain-hemorrag-v2
+            name: brain-hemorrag-v2 
+      restartPolicy: Never
+
+      volumes:
+      - name: brain-hemorrag-v2
+        persistentVolumeClaim:
+          claimName: brain-hemorrag-v2
+  backoffLimit: 5
