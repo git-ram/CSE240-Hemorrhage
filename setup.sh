@@ -11,4 +11,6 @@ pip3 install sklearn
 pip3 install matplotlib
 pip3 install cachetools
 apt-get --yes install git
+cd $2
+git pull 
 python3 $1
