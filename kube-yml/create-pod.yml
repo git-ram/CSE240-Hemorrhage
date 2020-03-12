@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: brain-hemorrage-pod
+spec:
+  containers:
+  - name: ubuntu-pod
+    image: ubuntu
+    args: ["sleep", "36500000"]
+    volumeMounts:
+    - mountPath: /brain-hemorrage
+      name: brain-hemorrag-v2
+  restartPolicy: Never
+  volumes:
+    - name: brain-hemorrag-v2
+      persistentVolumeClaim:
+        claimName: brain-hemorrag-v2
