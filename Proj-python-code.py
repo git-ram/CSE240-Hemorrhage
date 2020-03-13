@@ -40,9 +40,14 @@ from keras.layers.advanced_activations import LeakyReLU
 # For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
 
 
-        
-input_filepath = "../input/rsna-intracranial-hemorrhage-detection/rsna-intracranial-hemorrhage-detection/"
-train_image_filepath = "../input/rsna-intracranial-hemorrhage-detection/rsna-intracranial-hemorrhage-detection/stage_2_train/"
+# Paths to training files        
+input_filepath = "../../rsna-intracranial-hemorrhage-detection/"
+train_image_filepath = "../../rsna-intracranial-hemorrhage-detection/stage_2_train/"
+
+# Paths to csv files
+csv_file_path = "./CSV/down_sampled_positive_data.csv"
+csv_file_path_test = "./CSV/hem_positive_test_set.csv"
+
 # Any results you write to the current directory are saved as output.
 
 
@@ -252,9 +257,7 @@ def get_images(image_folder_root, image_label_list):
 
 
 ###using multilabel dataset
-#csv_file_path = "../input/brain-ai/hem_positive_train_set.csv"
-csv_file_path = "../input/dsampled-positive-data/down_sampled_positive_data.csv"
-csv_file_path_test = "../input/positive-test/hem_positive_test_set.csv"
+
 image_folder_root = train_image_filepath
 files_with_ids = get_two_class_labels(csv_file_path,stratify_percentage=1)
 X,y = [ x for x,y in files_with_ids], [y for x,y in files_with_ids]
