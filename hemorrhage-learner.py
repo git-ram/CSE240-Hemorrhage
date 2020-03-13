@@ -24,7 +24,7 @@ from keras.applications.densenet import *
 from numbers import Number
 from keras.utils import to_categorical
 import gc
-import psutil
+#import psutil
 from cachetools import TTLCache
 from sklearn.model_selection import StratifiedKFold
 from sklearn.utils import shuffle
