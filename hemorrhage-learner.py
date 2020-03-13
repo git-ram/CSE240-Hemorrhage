@@ -532,7 +532,7 @@ class  ModelTrainer(object):
             #####MULTILABEL RUN#######
 dataloader = DataLoader(train_image_filepath)
 model = Basic(5,5)
-parallel_model = multi_gpu_model(model, gpus=4)
+parallel_model = multi_gpu_model(model, gpus=2)
 parallel_model.compile(loss='binary_crossentropy', optimizer='adam')
 trainer = ModelTrainer(dataloader,split_size=700)
 model = trainer.fit(X,y,parallel_model,epochs = epoch_number)
