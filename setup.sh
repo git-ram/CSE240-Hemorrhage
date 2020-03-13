@@ -21,6 +21,7 @@ pip3 install numpy
 pip3 install pandas
 pip3 install keras
 pip3 install pydicom
+pip3 uninstall tensorflow
 pip3 install --upgrade tensorflow-gpu
 pip3 install sklearn
 pip3 install matplotlib
