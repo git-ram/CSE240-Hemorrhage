@@ -13,8 +13,7 @@ apt-get install --yes --no-install-recommends nvidia-driver-418
 nvidia-smi
 apt-get install --yes --no-install-recommends \
     cuda-10-0 \
-    libcudnn7=7.6.2.24-1+cuda10.0  \
-    libcudnn7-dev=7.6.2.24-1+cuda10.0
+    libcudnn7=7.6.2.24-1+cuda10.0  
 apt-get install -y --no-install-recommends libnvinfer5=5.1.5-1+cuda10.0 \
     libnvinfer-dev=5.1.5-1+cuda10.0
 pip3 install numpy 
