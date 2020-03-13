@@ -13,7 +13,7 @@ import pydicom
 from sklearn.utils import resample
 from keras.models import save_model
 import keras
-import dask
+# import dask
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Activation
