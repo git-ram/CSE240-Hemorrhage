@@ -9,9 +9,9 @@ apt-get update
 http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb
 apt install ./nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb
 apt-get update
-apt-get install --no-install-recommends nvidia-driver-418
+apt-get install --yes --no-install-recommends nvidia-driver-418
 nvidia-smi
-apt-get install --no-install-recommends \
+apt-get install --yes --no-install-recommends \
     cuda-10-0 \
     libcudnn7=7.6.2.24-1+cuda10.0  \
     libcudnn7-dev=7.6.2.24-1+cuda10.0
@@ -19,10 +19,9 @@ apt-get install -y --no-install-recommends libnvinfer5=5.1.5-1+cuda10.0 \
     libnvinfer-dev=5.1.5-1+cuda10.0
 pip3 install numpy 
 pip3 install pandas
-pip3 install keras
-pip3 install pydicom
 pip3 uninstall tensorflow
 pip3 install --upgrade tensorflow-gpu
+pip3 install keras
 pip3 install sklearn
 pip3 install matplotlib
 pip3 install cachetools
