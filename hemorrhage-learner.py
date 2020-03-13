@@ -1,5 +1,5 @@
 # Make sure the csv paths are set for PVC storage kubernetes.
-
+epoch_number = 30
 
 
 
@@ -535,7 +535,7 @@ class  ModelTrainer(object):
 dataloader = DataLoader(train_image_filepath)
 model = Basic(5,5)
 trainer = ModelTrainer(dataloader,split_size=700)
-model = trainer.fit(X,y,model,epochs = 10)
+model = trainer.fit(X,y,model,epochs = epoch_number)
 
 prediction , accuracy,recall,precision,class_recall, class_precision  = trainer.predict(X_test,y_test,model)
 
