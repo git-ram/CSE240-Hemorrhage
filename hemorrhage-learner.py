@@ -268,8 +268,8 @@ print(X[0])
 files_with_ids_fortest = get_two_class_labels_fortest(csv_file_path_test,stratify_percentage=1)
 X_test,y_test = [ x_test for x_test,y_test in files_with_ids_fortest], [y_test for x_test,y_test in files_with_ids_fortest]
 print (len(files_with_ids_fortest))
-print((y_test))
-print(X_test[0])
+#print((y_test))
+#print(X_test[0])
 
 
 class Model():
