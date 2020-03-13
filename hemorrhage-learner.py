@@ -14,6 +14,7 @@ from sklearn.utils import resample
 from keras.models import save_model
 import keras
 # import dask
+from keras.utils import multi_gpu_model
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Activation
@@ -30,10 +31,25 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.utils import shuffle
 import tensorflow as tf
 from keras.layers.advanced_activations import LeakyReLU
+import keras.backend.tensorflow_backend as tfback
 
+# Code to access four GPUs: https://github.com/keras-team/keras/issues/13684
+print("tf.__version__ is", tf.__version__)
+print("tf.keras.__version__ is:", tf.keras.__version__)
 
+def _get_available_gpus():
+    """Get a list of available gpu devices (formatted as strings).
 
+    # Returns
+        A list of available GPU devices.
+    """
+    #global _LOCAL_DEVICES
+    if tfback._LOCAL_DEVICES is None:
+        devices = tf.config.list_logical_devices()
+        tfback._LOCAL_DEVICES = [x.name for x in devices]
+    return [x for x in tfback._LOCAL_DEVICES if 'device:gpu' in x.lower()]
 
+tfback._get_available_gpus = _get_available_gpus
 
 
 # Input data files are available in the "../input/" directory.
@@ -534,8 +550,10 @@ class  ModelTrainer(object):
             #####MULTILABEL RUN#######
 dataloader = DataLoader(train_image_filepath)
 model = Basic(5,5)
+parallel_model = multi_gpu_model(model, gpus=4)
+parallel_model.compile(loss='binary_crossentropy', optimizer='adam')
 trainer = ModelTrainer(dataloader,split_size=700)
-model = trainer.fit(X,y,model,epochs = epoch_number)
+model = trainer.fit(X,y,parallel_model,epochs = epoch_number)
 
 prediction , accuracy,recall,precision,class_recall, class_precision  = trainer.predict(X_test,y_test,model)
 
