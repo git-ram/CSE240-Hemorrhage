@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-job-v4
+spec:
+  template:
+    spec:
+          containers:
+            - name: test-container-v2
+              image:  abhay3010/cse-240:base-py-packages-v2
+              imagePullPolicy: Always 
+              #args: ["sleep", "36500000"]
+              #command: ["rm"]
+              #args: ["-rf", "./brain-hemorrag-v2/repo/ramtin"] 
+              command: ["./brain-hemorrag-v2/repo/code-repo/setup.sh"]
+              args: [ "/brain-hemorrag-v2/repo/code-repo/simple-output-test.py", "/brain-hemorrag-v2/repo/code-repo/" ]
+              resources:
+                limits:
+                 nvidia.com/gpu: 1
+                 memory: "4Gi"
+                 cpu: "1000m"
+                requests:
+                 nvidia.com/gpu: 1
+                 memory: "2Gi"
+                 cpu: "1000m" 
+              volumeMounts:
+                - mountPath: /brain-hemorrag-v2
+                  name: brain-hemorrag-v2 
+          #initContainers:
+          #    - name: init-clone-repo
+          #      image: alpine/git
+          #      args:
+          #       - clone
+          #       - --single-branch
+          #       - https://github.com/git-ram/CSE240-Hemorrhage.git
+          #       - /brain-hemorrag-v2/repo/ramtin3
+          #      volumeMounts:
+          #       - mountPath: /brain-hemorrag-v2
+          #         name: brain-hemorrag-v2
+          restartPolicy: Never
+          volumes:
+           - name: brain-hemorrag-v2
+             persistentVolumeClaim:
+               claimName: brain-hemorrag-v2
+  backoffLimit: 5
