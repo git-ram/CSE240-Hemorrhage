@@ -9,7 +9,6 @@ import pydicom
 from sklearn.utils import resample
 from keras.models import save_model
 import keras
-import dask
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Activation
@@ -20,7 +19,6 @@ from keras.applications.densenet import *
 from numbers import Number
 from keras.utils import to_categorical
 import gc
-import psutil
 from cachetools import TTLCache
 from sklearn.model_selection import StratifiedKFold
 from sklearn.utils import shuffle
