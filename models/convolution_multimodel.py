@@ -51,20 +51,20 @@ class CNNMultilabel(Model):
         self.model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
         print("model setup successfully")
 
-        def fit(self, X, y):
-            X = np.array(X)
-            y = np.array(y)
-            if K.image_data_format() == 'channels_first':
-                X = X.reshape(X.shape[0], 1, self.img_rows, self.img_cols)
-            else:
-                X =  X.reshape( X.shape[0], img_rows, img_cols, 1)
-            self.model.fit(x=X, y=y, epochs=1, batch_size=8)
+    def fit(self, X, y):
+        X = np.array(X)
+        y = np.array(y)
+        if K.image_data_format() == 'channels_first':
+            X = X.reshape(X.shape[0], 1, self.img_rows, self.img_cols)
+        else:
+            X =  X.reshape( X.shape[0], img_rows, img_cols, 1)
+        self.model.fit(x=X, y=y, epochs=1, batch_size=8)
 
-        def predict(self, X):
-            X = np.array(X)
-            if K.image_data_format() == 'channels_first':
-                X = X.reshape(X.shape[0], 1, self.img_rows, self.img_cols)
-            else:
-                X = X.reshape(X.shape[0], self.img_rows, self.img_cols, 1)
-            pred = self.model.predict(X)
-            return pred
+    def predict(self, X):
+        X = np.array(X)
+        if K.image_data_format() == 'channels_first':
+            X = X.reshape(X.shape[0], 1, self.img_rows, self.img_cols)
+        else:
+            X = X.reshape(X.shape[0], self.img_rows, self.img_cols, 1)
+        pred = self.model.predict(X)
+        return pred
