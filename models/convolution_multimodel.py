@@ -52,8 +52,7 @@ class CNNMultilabel(Model):
         print("model setup successfully")
 
     def fit(self, X, y):
-        X = np.array(X)
-        y = np.array(y)
+
         if K.image_data_format() == 'channels_first':
             X = X.reshape(X.shape[0], 1, self.img_rows, self.img_cols)
         else:
@@ -61,7 +60,6 @@ class CNNMultilabel(Model):
         self.model.fit(x=X, y=y, epochs=1, batch_size=8)
 
     def predict(self, X):
-        X = np.array(X)
         if K.image_data_format() == 'channels_first':
             X = X.reshape(X.shape[0], 1, self.img_rows, self.img_cols)
         else:
