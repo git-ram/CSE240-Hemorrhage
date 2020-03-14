@@ -4,6 +4,7 @@ from models.basic_model import Basic
 import pandas as pd
 
 from models.basic_multilabel import BasicMultilabel
+from models.convolution_multimodel import CNNMultilabel
 
 
 def get_two_class_labels(csv_file_path, stratify_percentage=1):
