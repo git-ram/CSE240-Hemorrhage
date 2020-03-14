@@ -27,10 +27,13 @@ class CNNMultilabel(Model):
             self.input_shape = (img_rows,img_cols,1)
 
         self.model = Sequential()
-        self.model.add(Conv2D(16, kernel_size=(3, 3),
+        self.model.add(Conv2D(32, kernel_size=(3, 3),
                          activation='relu',
                          input_shape=self.input_shape))
-        self.model.add(MaxPooling2D(pool_size=(2, 2)))
+        self.model.add(MaxPooling2D(pool_size=(3, 3)))
+        self.model.add(Conv2D(64, kernel_size=(3, 3),
+                              ))
+        self.model.add(MaxPooling2D(pool_size=(3, 3)))
         self.model.add(Dropout(0.25))
         self.model.add(Flatten())
         self.model.add(Dense(128, activation='relu'))
