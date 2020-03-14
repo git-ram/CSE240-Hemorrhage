@@ -66,7 +66,7 @@ def get_two_class_labels_fortest(csv_file_path_test, stratify_percentage=1):
 
     return files_with_ids_fortest
 
-epoch_number = 30
+epoch_number = 5
 input_filepath = "../../rsna-intracranial-hemorrhage-detection/"
 train_image_filepath = "../../rsna-intracranial-hemorrhage-detection/stage_2_train/"
 
