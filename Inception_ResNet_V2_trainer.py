@@ -335,6 +335,7 @@ class Incept_ResNetV2(Model):
     def fit(self, X,y):
         self.my_model.fit(x=X,y=y,batch_size=8, epochs=1)
     def predict(self, X):
+        X.reshape(len(X), 512, 512, 1)
         self.my_model.predict(X)
 
 
