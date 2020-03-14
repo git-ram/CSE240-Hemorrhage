@@ -4,7 +4,7 @@ from models.basic_model import Basic
 import pandas as pd
 
 from models.basic_multilabel import BasicMultilabel
-from models.convolution_multimodel import CNNMultilabel
+from models.cnn_model2_multilabel import CNNMultilabel2
 
 
 def get_two_class_labels(csv_file_path, stratify_percentage=1):
@@ -69,7 +69,7 @@ def get_two_class_labels_fortest(csv_file_path_test, stratify_percentage=1):
 
     return files_with_ids_fortest
 
-epoch_number = 50
+epoch_number = 15
 input_filepath = "../../rsna-intracranial-hemorrhage-detection/"
 train_image_filepath = "../../rsna-intracranial-hemorrhage-detection/stage_2_train/"
 
