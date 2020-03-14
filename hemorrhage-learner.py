@@ -94,7 +94,7 @@ def brain_window(img):
     img_min = window_center - window_width // 2
     img_max = window_center + window_width // 2
     img = img.pixel_array
-    img = img * dataset.RescaleSlope + intercept
+    img = img * img.RescaleSlope + intercept
     img[img < img_min] = img_min
     img[img > img_max] = img_max
     # Normalize

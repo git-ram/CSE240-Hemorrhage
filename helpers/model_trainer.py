@@ -3,6 +3,8 @@ import gc
 from cachetools import TTLCache
 from sklearn.model_selection import StratifiedKFold
 from sklearn.utils import shuffle
+from helpers.metric import Metric
+import numpy as np
 
 
 class ModelTrainer(object):
@@ -59,9 +61,13 @@ class ModelTrainer(object):
 
     def predict(self, X_test, y_test, model, epochs=5, training_batch_size=8):
 
-        splits = len(y) // self.split_size + 1
+        splits = len(y_test) // self.split_size + 1
         splitter = StratifiedKFold(n_splits=splits, random_state=None, shuffle=False)
         processed = 0
+        class_wise_metrics = dict()
+        overall_test_sample_count = 0
+        overall_correct_classifications = 0
+
         while processed < len(y_test):
             batch_imgs_test = []
             batch_labels_test = []
@@ -70,43 +76,12 @@ class ModelTrainer(object):
             current_y_test = y_test[processed:min(processed + self.split_size, len(y_test))]
             for img, label in zip(current_x_test, current_y_test):
                 image = self.dataloader.load_image(img)
-                ##Figure out how many images are getting ignored because of this assumption
-                ##check if all reshape operations can happen in the dataloader
                 if image.shape != (512, 512):
                     continue
                 batch_imgs_test.append(image)
                 batch_labels_test.append(label)
-            # print("Length of images",len(batch_imgs_test))
-            # print("using  batch with size", len(batch_imgs_test), len(batch_labels_test), "Processed ", processed, "Total ", len(y_test))
-
             batch_imgs_test = np.array(batch_imgs_test)
-            # print("Length of images",len(batch_imgs_test))
-            # print("Shape before reshaping",batch_imgs_test.shape)
-
-            # predict_input = batch_imgs_test.reshape(len(X_test),2)
-
-            # batch_imgs_test = np.expand_dims(batch_imgs_test, axis=1)
-            # batch_imgs_test = np.expand_dims(batch_imgs_test, axis=1)
-
-            # print("shape of input to predict",batch_imgs_test.shape)
             preds = model.predict(batch_imgs_test)
-            # print("the predicted y is of length : ", len(preds))
-            # print("first sample prediciton is ", preds[0])
-            ##classwise precision, recall
-            ##classwise precision, recall
-            acc_sum = 0
-            true_pos = 0
-            false_pos = 0
-            true_neg = 0
-            false_neg = 0
-
-            class_true_pos = np.zeros([5, 1])
-            class_true_neg = np.zeros([5, 1])
-            class_false_pos = np.zeros([5, 1])
-            class_false_neg = np.zeros([5, 1])
-
-            class_recall = np.zeros([5, 1])
-            class_precision = np.zeros([5, 1])
 
             for i in range(len(preds)):
                 for j in range(len(preds[0])):
@@ -115,44 +90,36 @@ class ModelTrainer(object):
                     if (preds[i][j]) < 0.5:
                         preds[i][j] = 0
             for a in range(len(preds)):
+                overall_test_sample_count+=1
                 if (np.all(batch_labels_test[a] == preds[a])):
-                    acc_sum = acc_sum + 1;
+                    overall_correct_classifications+=1
                 for b in range(len(preds[a])):
+                    if b not in class_wise_metrics:
+                        class_wise_metrics[b] = Metric()
+
                     if (batch_labels_test[a][b] == preds[a][b] and preds[a][b] == 1):
-                        # acc_sum = acc_sum+1
-                        class_true_pos[b] = class_true_pos[b] + 1
-                        true_pos = true_pos + 1
+                        class_wise_metrics[b].add_true_positive()
 
                     if (batch_labels_test[a][b] == preds[a][b] and preds[a][b] == 0):
-                        class_true_neg[b] = class_true_neg[b] + 1
-                        true_neg = true_neg + 1
+
+                        class_wise_metrics[b].add_true_negative()
 
                     if (batch_labels_test[a][b] < preds[a][b]):
-                        class_false_pos[b] = class_false_pos[b] + 1
-                        false_pos = false_pos + 1
+
+                        class_wise_metrics[b].add_false_positive()
 
                     if (batch_labels_test[a][b] > preds[a][b]):
-                        class_false_neg[b] = class_false_neg[b] + 1
-                        false_neg = false_neg + 1
 
-            accuracy = (acc_sum / len(preds)) * 100
-            recall = (true_pos) / (true_pos + false_neg)
-            precision = (true_pos) / (true_pos + false_pos)
-
-            for c in range(len(class_recall)):
-                class_recall[c] = (class_true_pos[c]) / (class_true_pos[c] + class_false_neg[c])
-                class_precision[c] = (class_true_pos[c]) / (class_true_pos[c] + class_false_pos[c])
-
-            print("Accuracy", accuracy)
-            print("Recall", recall)
-            print("Precision", precision)
-            print("Class-wise precision\n", class_precision)
-            print("Class-wise recall\n", class_recall)
-            print("\n")
+                        class_wise_metrics[b].add_false_negative()
 
             self.dataloader.trigger_expire()
             del batch_imgs_test
             del batch_labels_test
             processed += self.split_size
+            print (class_wise_metrics)
+        print ("Overall class metrics")
+        for k,v in class_wise_metrics.items():
+            print ("Class {0}: {1}".format(k,v))
+        print ("Overall accuracy", 100*overall_correct_classifications/overall_test_sample_count)
+        return class_wise_metrics, overall_correct_classifications,overall_test_sample_count
 
-        return (preds, accuracy, recall, precision, class_recall, class_precision)
