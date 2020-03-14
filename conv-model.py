@@ -9,6 +9,7 @@ import pydicom
 from sklearn.utils import resample
 from keras.models import save_model
 import keras
+#import dask
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Activation
@@ -19,12 +20,14 @@ from keras.applications.densenet import *
 from numbers import Number
 from keras.utils import to_categorical
 import gc
+#import psutil
 from cachetools import TTLCache
 from sklearn.model_selection import StratifiedKFold
 from sklearn.utils import shuffle
 import tensorflow as tf
 from keras.layers.advanced_activations import LeakyReLU
 from keras.layers import Conv2D
+from keras import backend as K
 
 
 
@@ -38,6 +41,9 @@ from keras.layers import Conv2D
         
 input_filepath = "../../rsna-intracranial-hemorrhage-detection/"
 train_image_filepath = "../../rsna-intracranial-hemorrhage-detection/stage_2_train/"
+
+#input_filepath = "../input/rsna-intracranial-hemorrhage-detection/rsna-intracranial-hemorrhage-detection/"
+#train_image_filepath = "../input/rsna-intracranial-hemorrhage-detection/rsna-intracranial-hemorrhage-detection/stage_2_train/"
 
 # Any results you write to the current directory are saved as output.
 
@@ -76,7 +82,6 @@ plt.savefig('before-windowing.png')
 
 plt.show()
 
-
 # %% [code]
 dir(dataset)
 
@@ -95,15 +100,11 @@ def brain_window(img):
     # Normalize
     img = (img - img_min) / (img_max - img_min)
     return img
-    
 
 # %% [code]
 plt.imshow(brain_window(dataset), cmap=plt.cm.bone)
 plt.title('After Windowing', y=-0.17)
 plt.savefig('after-windowing.png')
-
-
-
 
 # %% [code]
 def balanced_subsample(x,y,subsample_size=1.0):
@@ -252,11 +253,11 @@ def get_images(image_folder_root, image_label_list):
 
 # %% [code]
 ###using multilabel dataset
-#csv_file_path = "../input/brain-ai/hem_positive_train_set.csv"
-#csv_file_path = "../input/dsampled-positive-data/down_sampled_positive_data.csv"
-#csv_file_path_test = "../input/positive-test/hem_positive_test_set.csv"
 csv_file_path = "./CSV/down_sampled_positive_data.csv"
 csv_file_path_test = "./CSV/hem_positive_test_set.csv"
+
+#csv_file_path = "../input/brain-ai-equalsample/down_sampled_positive_data.csv"
+#csv_file_path_test = "../input/brain-ai/hem_positive_test_set.csv"
 image_folder_root = train_image_filepath
 files_with_ids = get_two_class_labels(csv_file_path,stratify_percentage=1)
 X,y = [ x for x,y in files_with_ids], [y for x,y in files_with_ids]
@@ -267,9 +268,8 @@ print(X[0])
 files_with_ids_fortest = get_two_class_labels_fortest(csv_file_path_test,stratify_percentage=1)
 X_test,y_test = [ x_test for x_test,y_test in files_with_ids_fortest], [y_test for x_test,y_test in files_with_ids_fortest]
 print (len(files_with_ids_fortest))
-print((y_test))
+#print((y_test))
 print(X_test[0])
-
 
 # %% [code]
 class Model():
@@ -312,22 +312,48 @@ class Basic(Model):
     def save(self,filename):
         self.model.save(filename)
 
-
-
 # %% [code]
 ############multiclass classifier, basic model, with 5 neurons in the output layer, sigmoid function and categorical cross-entropy#########
 class Basic(Model):
     """intput dimension is the shape of the input"""
-    def __init__(self, input_dimension, output_dimension):
+    def __init__(self, input_dimension, output_dimension,X_train,X_test):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
+        dataloader = DataLoader(train_image_filepath)
+        
+        for img in X_train:
+            image_train = dataloader.load_image(img)
+            
+        for imgtest in X_test:
+            image_test = dataloader.load_image(imgtest)
+        
+        ##Figure out how many images are getting ignored because of this assumption
+        ##check if all reshape operations can happen in the dataloader
+       
+        x_train = []
+        x_test = []
+        x_train.append(image_train)
+        x_test.append(image_test)
+                    
+        x_train = np.asarray(x_train)
+        x_test = np.asarray(x_test)
+        img_rows = 512
+        img_cols = 512
+        
+        ##new changes##
+        if K.image_data_format() == 'channels_first':
+            x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
+            x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
+            input_shape = (1, img_rows, img_cols)
+        else:
+            x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
+            x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
+            input_shape = (img_rows, img_cols, 1)
+       
         self.model = Sequential()
-     
-        #self.model.add(keras.layers.Conv2D(200,kernel_size=(3,3),data_format=None,activation='relu',input_shape=(700,512,512,1))) ###(batch, rows, cols, channels)
-        ###start conv2d layers###
-        self.model.add(Conv2D(64, kernel_size=3, activation='relu',input_shape=(512,512,1)))
-        #self.model.add(Conv2D(32, kernel_size=3, activation='relu'))
-        ###end conv2d layer###
+        self.model.add(Conv2D(32, kernel_size=(3, 3),
+                 activation='relu',
+                 input_shape=input_shape))
         self.model.add(Flatten())
         self.model.add(Dense(400)) #,input_shape=(512,512)))
         self.model.add(LeakyReLU(alpha=0.3))
@@ -348,6 +374,7 @@ class Basic(Model):
         self.model.add(Dense(5))
         self.model.add(Activation('sigmoid'))
         self.model.compile(optimizer='adam', loss='binary_crossentropy',metrics=['accuracy'])
+        print("model setup successfully")
 
  
         
@@ -545,15 +572,14 @@ class  ModelTrainer(object):
                 processed +=self.split_size
                         
             return(preds,accuracy,recall,precision, class_recall, class_precision)
-                          
 
 # %% [code]
 #####MULTILABEL RUN#######
 dataloader = DataLoader(train_image_filepath)
-model = Basic(5,5)
+model = Basic(5,5,X,X_test)
+#model = Basic(5,5)
 trainer = ModelTrainer(dataloader,split_size=700)
 model = trainer.fit(X,y,model,epochs = 50)
-
 
 # %% [code]
 prediction , accuracy,recall,precision,class_recall, class_precision  = trainer.predict(X_test,y_test,model)
