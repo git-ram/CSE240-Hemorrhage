@@ -335,6 +335,7 @@ class Incept_ResNetV2(Model):
     def fit(self, X,y):
         self.my_model.fit(x=X,y=y,batch_size=8, epochs=1)
     def predict(self, X):
+        X.reshape(len(X), 512, 512, 1)
         self.my_model.predict(X)
 
 
@@ -574,7 +575,7 @@ class  ModelTrainer(object):
 dataloader = DataLoader(train_image_filepath)
 model = Incept_ResNetV2((512, 512,3),(1,5)) 
 trainer = ModelTrainer(dataloader,split_size=700)
-model = trainer.fit(X, y, model, epochs = 10)
+model = trainer.fit(X, y, model, epochs = 1)
 
 
 prediction , accuracy,recall,precision,class_recall, class_precision  = trainer.predict(X_test,y_test,model)
