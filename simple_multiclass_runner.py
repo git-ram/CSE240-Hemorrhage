@@ -3,6 +3,8 @@ from helpers.model_trainer import ModelTrainer
 from models.basic_model import Basic
 import pandas as pd
 
+from models.basic_multilabel import BasicMultilabel
+
 
 def get_two_class_labels(csv_file_path, stratify_percentage=1):
     """returns a list of tuples where the first value is the file id and the second is the label
@@ -85,7 +87,7 @@ X_test,y_test = [ x_test for x_test,y_test in files_with_ids_fortest], [y_test f
 print (len(files_with_ids_fortest))
 #print((y_test))
 dataloader = DataLoader(train_image_filepath)
-model = Basic(5,5)
+model = BasicMultilabel(5,5)
 
 trainer = ModelTrainer(dataloader,split_size=700)
 model = trainer.fit(X,y,model,epochs = epoch_number)
