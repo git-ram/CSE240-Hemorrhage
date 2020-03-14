@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, LeakyReLU
+from keras.layers import Dense, Conv2D, LeakyReLU, MaxPooling2D, Dropout
 from keras.layers import Activation
 from keras.layers import Flatten
 from keras.layers import Input
@@ -7,6 +7,7 @@ from keras.layers import Concatenate
 from keras.applications.densenet import *
 from numbers import Number
 from keras.utils import to_categorical
+import keras
 
 from models.model import Model
 import numpy as np
@@ -25,31 +26,21 @@ class CNNMultilabel(Model):
         else:
             self.input_shape = (img_rows,img_cols,1)
 
-        self.model = Sequential()
-        self.model.add(Conv2D(8, kernel_size=(3, 3),
-                              activation='relu',
-                              input_shape=self.input_shape))
-        self.model.add(Flatten())
-        self.model.add(Dense(400))  # ,input_shape=(512,512)))
-        self.model.add(LeakyReLU(alpha=0.3))
-        self.model.add(Dense(200))
-        self.model.add(LeakyReLU(alpha=0.3))
-        self.model.add(Dense(100))
-        self.model.add(LeakyReLU(alpha=0.3))
-        # self.model.add(Activation('relu'))
-        self.model.add(Dense(30))
-        self.model.add(LeakyReLU(alpha=0.3))
-        # self.model.add(Activation('relu'))
-        self.model.add(Dense(15))
-        self.model.add(LeakyReLU(alpha=0.3))
-        # self.model.add(Activation('relu'))
-        self.model.add(Dense(10))
-        self.model.add(LeakyReLU(alpha=0.3))
-        # self.model.add(Activation('relu'))
-        self.model.add(Dense(5))
-        self.model.add(Activation('sigmoid'))
-        self.model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-        print("model setup successfully")
+        model = Sequential()
+        model.add(Conv2D(32, kernel_size=(3, 3),
+                         activation='relu',
+                         input_shape=self.input_shape))
+        model.add(Conv2D(64, (3, 3), activation='relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
+        model.add(Flatten())
+        model.add(Dense(128, activation='relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(5, activation='sigmoid'))
+
+        model.compile(loss=keras.losses.categorical_crossentropy,
+                      optimizer=keras.optimizers.Adadelta(),
+                      metrics=['accuracy'])
 
     def fit(self, X, y):
 
