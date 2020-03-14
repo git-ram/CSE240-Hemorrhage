@@ -90,7 +90,7 @@ print (len(files_with_ids_fortest))
 dataloader = DataLoader(train_image_filepath)
 model = CNNMultilabel(512,512)
 
-trainer = ModelTrainer(dataloader,split_size=100)
+trainer = ModelTrainer(dataloader,split_size=25)
 model = trainer.fit(X,y,model,epochs = epoch_number)
 
 response  = trainer.predict(X_test,y_test,model)
