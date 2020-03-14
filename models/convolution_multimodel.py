@@ -16,7 +16,7 @@ from keras import backend as K
 class CNNMultilabel(Model):
     """intput dimension is the shape of the input"""
 
-    def __init__(self, img_rows, img_cols, input_shape):
+    def __init__(self, img_rows, img_cols):
         self.img_rows = img_rows
         self.img_cols = img_cols
         if  K.image_data_format() == 'channels_first':
@@ -55,7 +55,7 @@ class CNNMultilabel(Model):
             X = np.array(X)
             y = np.array(y)
             if K.image_data_format() == 'channels_first':
-                X = X.reshape(X.shape[0], 1, img_rows, img_cols)
+                X = X.reshape(X.shape[0], 1, self.img_rows, self.img_cols)
             else:
                 X =  X.reshape( X.shape[0], img_rows, img_cols, 1)
             self.model.fit(x=X, y=y, epochs=1, batch_size=8)
@@ -63,8 +63,8 @@ class CNNMultilabel(Model):
         def predict(self, X):
             X = np.array(X)
             if K.image_data_format() == 'channels_first':
-                X = X.reshape(X.shape[0], 1, img_rows, img_cols)
+                X = X.reshape(X.shape[0], 1, self.img_rows, self.img_cols)
             else:
-                X = X.reshape(X.shape[0], img_rows, img_cols, 1)
+                X = X.reshape(X.shape[0], self.img_rows, self.img_cols, 1)
             pred = self.model.predict(X)
             return pred

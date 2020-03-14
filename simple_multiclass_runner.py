@@ -68,7 +68,7 @@ def get_two_class_labels_fortest(csv_file_path_test, stratify_percentage=1):
 
     return files_with_ids_fortest
 
-epoch_number = 5
+epoch_number = 1
 input_filepath = "../../rsna-intracranial-hemorrhage-detection/"
 train_image_filepath = "../../rsna-intracranial-hemorrhage-detection/stage_2_train/"
 
@@ -87,7 +87,7 @@ X_test,y_test = [ x_test for x_test,y_test in files_with_ids_fortest], [y_test f
 print (len(files_with_ids_fortest))
 #print((y_test))
 dataloader = DataLoader(train_image_filepath)
-model = BasicMultilabel(5,5)
+model = CNNMultilabel(512,512)
 
 trainer = ModelTrainer(dataloader,split_size=700)
 model = trainer.fit(X,y,model,epochs = epoch_number)
