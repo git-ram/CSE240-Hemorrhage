@@ -60,6 +60,7 @@ class ModelTrainer(object):
         return model
 
     def predict(self, X_test, y_test, model, epochs=5, training_batch_size=8):
+        print("Predicting")
 
         splits = len(y_test) // self.split_size + 1
         splitter = StratifiedKFold(n_splits=splits, random_state=None, shuffle=False)

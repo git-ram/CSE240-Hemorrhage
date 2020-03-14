@@ -92,12 +92,8 @@ model = BasicMultilabel(5,5)
 trainer = ModelTrainer(dataloader,split_size=700)
 model = trainer.fit(X,y,model,epochs = epoch_number)
 
-prediction , accuracy,recall,precision,class_recall, class_precision  = trainer.predict(X_test,y_test,model)
+response  = trainer.predict(X_test,y_test,model)
 
-print(prediction[1])
-print(y_test[1])
-
-print("Recall ",recall)
-print("Accuracy ",accuracy)
+print (response)
 
 model.model.summary()
