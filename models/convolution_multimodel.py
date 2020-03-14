@@ -26,7 +26,7 @@ class CNNMultilabel(Model):
             self.input_shape = (img_rows,img_cols,1)
 
         self.model = Sequential()
-        self.model.add(Conv2D(32, kernel_size=(3, 3),
+        self.model.add(Conv2D(8, kernel_size=(3, 3),
                               activation='relu',
                               input_shape=self.input_shape))
         self.model.add(Flatten())
