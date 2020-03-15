@@ -64,7 +64,7 @@ class ModelTrainer(object):
         #         continue
         #     batch_imgs.append(image)
         #     batch_labels.append(label)
-        img_label_pairs = Parallel(n_jobs=-1)(delayed(seld.load_image)(k,v) for k,v in img_label_pairs)
+        img_label_pairs = Parallel(n_jobs=-1)(delayed(self.load_image)(k,v) for k,v in img_label_pairs)
         batch_imgs = [k for k,v in img_label_pairs if k is not None and k.shape == (512,512)]
         batch_labels = [v for k,v in img_label_pairs if k is not None and k.shape == (512,512)]
 
