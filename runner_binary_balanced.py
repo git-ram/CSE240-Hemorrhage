@@ -90,7 +90,7 @@ print (len(files_with_ids_fortest))
 dataloader = DataLoader(train_image_filepath)
 model = Basic2(512,512,gpu=2)
 
-trainer = ModelTrainer(dataloader,split_size=3000)
+trainer = ModelTrainer(dataloader,split_size=1500)
 model = trainer.fit(X,y,model,epochs = epoch_number)
 
 response  = trainer.predict(X_test,y_test,model)

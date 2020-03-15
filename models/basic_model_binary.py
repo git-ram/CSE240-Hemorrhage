@@ -43,7 +43,7 @@ class Basic2(Model):
         
     
     def fit(self, X,y):
-        self.model.fit(x=X,y=y,epochs=1,batch_size=700)
+        self.model.fit(x=X,y=y,epochs=1,batch_size=128)
     def predict(self, X):
         pred = self.model.predict(X)
         return pred
