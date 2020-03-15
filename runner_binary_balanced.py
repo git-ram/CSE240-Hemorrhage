@@ -18,7 +18,7 @@ def get_two_class_labels(csv_file_path, stratify_percentage=1):
 
     # print(input_dataframe.columns.values)
     X = list(input_dataframe['ID'])
-    y_dataframe = input_dataframe.drop(input_dataframe.columns[[0]], axis=1)
+    y_dataframe = input_dataframe.drop(input_dataframe.columns[[0,1]], axis=1)
 
     # print(y_dataframe.head)
 
