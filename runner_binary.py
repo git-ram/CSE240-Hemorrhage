@@ -1,4 +1,4 @@
-from helpers.dataloader import DataLoader
+from helpers.dataloader_binary import DataLoader
 from helpers.model_trainer import ModelTrainer
 from models.basic_model_binary import Basic2
 import pandas as pd
