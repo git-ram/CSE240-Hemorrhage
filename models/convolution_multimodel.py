@@ -40,7 +40,7 @@ class CNNMultilabel(Model):
         self.model.add(Dropout(0.5))
         self.model.add(Dense(5, activation='sigmoid'))
 
-        self.model.compile(loss=keras.losses.categorical_crossentropy(),
+        self.model.compile(loss=keras.losses.binary_crossentropy,
                       optimizer=keras.optimizers.Adadelta(),
                       metrics=['accuracy'])
 
