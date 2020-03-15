@@ -95,6 +95,7 @@ trainer = ModelTrainer(dataloader,split_size=700)
 model = trainer.fit(X,y,model,epochs = epoch_number)
 res  = trainer.predict(X_test,y_test,model)
 
+print(res)
 
 model = trainer.fit(X,y,model,epochs = 20)
 response  = trainer.predict(X_test,y_test,model)
