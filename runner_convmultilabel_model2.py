@@ -1,9 +1,9 @@
 from helpers.dataloader import DataLoader
 from helpers.model_trainer import ModelTrainer
-from models.basic_model import Basic
+#from models.basic_model import Basic
 import pandas as pd
 
-from models.basic_multilabel import BasicMultilabel
+#from models.basic_multilabel import BasicMultilabel
 from models.cnn_model2_multilabel import CNNMultilabel2
 
 
@@ -90,7 +90,7 @@ print (len(files_with_ids_fortest))
 dataloader = DataLoader(train_image_filepath)
 model = CNNMultilabel2(512,512)
 
-trainer = ModelTrainer(dataloader,split_size=1200)
+trainer = ModelTrainer(dataloader,split_size=700)
 model = trainer.fit(X,y,model,epochs = epoch_number)
 
 response  = trainer.predict(X_test,y_test,model)
