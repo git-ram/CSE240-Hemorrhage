@@ -69,7 +69,7 @@ def get_two_class_labels_fortest(csv_file_path_test, stratify_percentage=1):
 
     return files_with_ids_fortest
 
-epoch_number = 10
+epoch_number = 5
 input_filepath = "../../rsna-intracranial-hemorrhage-detection/"
 train_image_filepath = "../../rsna-intracranial-hemorrhage-detection/stage_2_train/"
 
@@ -88,7 +88,8 @@ print(X[0])
 dataloader = DataLoader(train_image_filepath)
 model = Basic2(512,512,gpu=2)
 
-trainer = ModelTrainer(dataloader,split_size=5000)
+trainer = ModelTrainer(dataloader,split_size=7000)
+trainer = ModelTrainer(dataloader,split_size=7000)
 model = trainer.fit(X,y,model,epochs = epoch_number)
 
 files_with_ids_fortest = get_two_class_labels_fortest(csv_file_path_test,stratify_percentage=1)
