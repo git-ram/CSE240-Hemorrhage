@@ -83,15 +83,17 @@ print (len(files_with_ids))
 print((y[0]))
 print(X[0])
 
-files_with_ids_fortest = get_two_class_labels_fortest(csv_file_path_test,stratify_percentage=1)
-X_test,y_test = [ x_test for x_test,y_test in files_with_ids_fortest], [y_test for x_test,y_test in files_with_ids_fortest]
-print (len(files_with_ids_fortest))
+
 #print((y_test))
 dataloader = DataLoader(train_image_filepath)
 model = Basic2(512,512,gpu=2)
 
 trainer = ModelTrainer(dataloader,split_size=1500)
 model = trainer.fit(X,y,model,epochs = epoch_number)
+
+files_with_ids_fortest = get_two_class_labels_fortest(csv_file_path_test,stratify_percentage=1)
+X_test,y_test = [ x_test for x_test,y_test in files_with_ids_fortest], [y_test for x_test,y_test in files_with_ids_fortest]
+print (len(files_with_ids_fortest))
 
 response  = trainer.predict(X_test,y_test,model)
 
