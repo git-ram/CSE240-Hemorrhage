@@ -6,7 +6,7 @@ from keras.layers import Input
 from keras.layers import Concatenate
 from keras.applications.densenet import *
 from numbers import Number
-from keras.utils import to_categorical
+from keras.utils import to_categorical, multi_gpu_model
 
 from models.model import Model
 
@@ -38,7 +38,7 @@ class Basic2(Model):
         self.model.add(Dense(1))
         self.model.add(Activation('sigmoid'))
         if gpu > 1:
-            self.model = multi_gpu_model(self.model,gpus=gpu)
+            self.model = multi_gpu_model(self.model)
         self.history = self.model.compile(optimizer='adam', loss='binary_crossentropy',metrics=['accuracy'])
 
  
