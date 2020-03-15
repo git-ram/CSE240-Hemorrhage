@@ -37,8 +37,6 @@ class Basic2(Model):
         #self.model.add(Activation('relu'))
         self.model.add(Dense(1))
         self.model.add(Activation('sigmoid'))
-        if gpu > 1:
-            self.model = multi_gpu_model(self.model)
         self.history = self.model.compile(optimizer='adam', loss='binary_crossentropy',metrics=['accuracy'])
 
  
