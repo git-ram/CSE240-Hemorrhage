@@ -35,7 +35,7 @@ class ModelTrainer(object):
                     image = self.dataloader.load_image(img)
                     ##Figure out how many images are getting ignored because of this assumption
                     ##check if all reshape operations can happen in the dataloader
-                    if image == None or image.shape != (512, 512):
+                    if image is None or image.shape != (512, 512):
                         continue
                     batch_imgs.append(image)
                     batch_labels.append(label)
