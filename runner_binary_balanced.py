@@ -88,7 +88,7 @@ print(X[0])
 dataloader = DataLoader(train_image_filepath)
 model = Basic2(512,512,gpu=2)
 
-trainer = ModelTrainer(dataloader,split_size=10000)
+trainer = ModelTrainer(dataloader,split_size=5000)
 model = trainer.fit(X,y,model,epochs = epoch_number)
 
 files_with_ids_fortest = get_two_class_labels_fortest(csv_file_path_test,stratify_percentage=1)
