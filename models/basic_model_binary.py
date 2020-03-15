@@ -14,7 +14,7 @@ from models.model import Model
 
 class Basic2(Model):
     """intput dimension is the shape of the input"""
-    def __init__(self, input_dimension, output_dimension):
+    def __init__(self, input_dimension, output_dimension, gpu=1):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
         self.model = Sequential()
@@ -37,13 +37,15 @@ class Basic2(Model):
         #self.model.add(Activation('relu'))
         self.model.add(Dense(1))
         self.model.add(Activation('sigmoid'))
-        history = self.model.compile(optimizer='adam', loss='binary_crossentropy',metrics=['accuracy'])
+        if gpu > 1:
+            self.model = multi_gpu_model(self.model,gpus=gpu)
+        self.history = self.model.compile(optimizer='adam', loss='binary_crossentropy',metrics=['accuracy'])
 
  
         
     
     def fit(self, X,y):
-        self.model.fit(x=X,y=y,epochs=1,batch_size=8)
+        self.model.fit(x=X,y=y,epochs=1,batch_size=700)
     def predict(self, X):
         pred = self.model.predict(X)
         return pred
