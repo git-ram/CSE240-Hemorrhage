@@ -5,6 +5,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.utils import shuffle
 from helpers.metric import Metric
 import numpy as np
+from joblib import Parallel,delayed
 
 
 class ModelTrainer(object):
@@ -26,19 +27,11 @@ class ModelTrainer(object):
             ##TODO: add a better split and shuffle mechanism
             processed = 0
             while processed < len(y):
-                batch_imgs = []
-                batch_labels = []
+
 
                 current_x = X[processed:min(processed + self.split_size, len(y))]
                 current_y = y[processed:min(processed + self.split_size, len(y))]
-                for img, label in zip(current_x, current_y):
-                    image = self.dataloader.load_image(img)
-                    ##Figure out how many images are getting ignored because of this assumption
-                    ##check if all reshape operations can happen in the dataloader
-                    if image is None or image.shape != (512, 512):
-                        continue
-                    batch_imgs.append(image)
-                    batch_labels.append(label)
+                batch_imgs, batch_labels = self.load_images(current_x, current_y)
                 print("Length of images", len(batch_imgs))
                 print("Using  batch with size", len(batch_imgs), len(batch_labels), "Processed ", processed, "Total ",
                       len(y))
@@ -58,6 +51,27 @@ class ModelTrainer(object):
             count += 1
 
         return model
+
+    def load_images(self, current_x, current_y, exceptions = set(["ID_6431af929"])):
+        batch_imgs = []
+        batch_labels = []
+        img_label_pairs = [ (x, y) for x,y in zip(current_x,current_y) if x not in exceptions ]
+        # for img, label in img_label_pairs:
+        #     image = self.dataloader.load_image(img)
+        #     ##Figure out how many images are getting ignored because of this assumption
+        #     ##check if all reshape operations can happen in the dataloader
+        #     if image is None or image.shape != (512, 512):
+        #         continue
+        #     batch_imgs.append(image)
+        #     batch_labels.append(label)
+        img_label_pairs = Parallel(n_jobs=-1)(delayed(seld.load_image)(k,v) for k,v in img_label_pairs)
+        batch_imgs = [k for k,v in img_label_pairs if k is not None and k.shape == (512,512)]
+        batch_labels = [v for k,v in img_label_pairs if k is not None and k.shape == (512,512)]
+
+        return batch_imgs,batch_labels
+
+    def load_image(self, img_name,label):
+        return self.dataloader.load_image(img_name), label
 
     def predict(self, X_test, y_test, model, epochs=5, training_batch_size=8):
         print("Predicting")
