@@ -3,7 +3,7 @@ Intracranial hemorrhage is when bleeding occurs inside the cranium and it is one
 
 ### Details of the files organised. 
 1. The git repo contains both types of experiments, ones run on kaggle as well as the ones run on PRP. 
-2. For the experiments run on PRP, the details of the models are in the models folder.(basic_model_binary.py, basic_multilabel.py, convolution_multimodel.py, and cnn_model2_multilabel.py ) The helper folder contains classes used to perform training as well as reading abd preprocessing the dicom data. 
+2. For the experiments run on PRP, the details of the models are in the models folder.(basic_model_binary.py, basic_multilabel.py, convolution_multimodel.py, and cnn_model2_multilabel.py ) The helper folder contains classes used to perform training as well as reading and preprocessing the dicom data. 
 3. For the inital experiments(phase 1) which was carried out completely on kaggle, the code can be found in the ipython notebooks imported. 
 
 
